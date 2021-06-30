@@ -143,14 +143,11 @@ contract Airdrop is ReentrancyGuard, Context, Ownable{
     mapping(address => uint256) private _valDrop;
     
     IERC20 private _token;
-    bool airdropLive = false;
+    bool public airdropLive = false;
     
     event AirdropClaimed(address receiver, uint256 amount);
     event WhitelistSetted(address[] recipient, uint256[] amount);
     
-     receive () external payable {
-            claimTokens();
-     }
      
      //Start Airdrop
     function startAirdrop(IERC20 tokenAddress) public onlyOwner{
@@ -167,7 +164,7 @@ contract Airdrop is ReentrancyGuard, Context, Ownable{
         emit WhitelistSetted(recipients, amount);
     }
 
-    function claimTokens() public nonReentrant payable {
+    function claimTokens() public nonReentrant {
         require(airdropLive == true, 'Airdrop not started yet');
         require(Claimed[msg.sender] == false, 'Airdrop already claimed!');
         if(_token.balanceOf(address(this)) == 0) { airdropLive = false; return;}
